@@ -33,15 +33,18 @@ public class DipendenteController {
     @Autowired
     private DipendenteService dipendenteService;
 
+
     @GetMapping
     public ResponseEntity<List<Dipendente>> findAll() {
         return ResponseEntity.ok().body(dipendenteService.findAll());
     }
 
+
     @GetMapping("/{email}")
     public ResponseEntity<Dipendente> findByEmail(@PathVariable String email) {
         return ResponseEntity.ok().body(dipendenteService.findByEmail(email));
     }
+
 
     @PostMapping("/nuovo")
     public ResponseEntity<Dipendente> save(@RequestBody Dipendente dipendente) {
@@ -52,12 +55,12 @@ public class DipendenteController {
     }
 
 
-
     @PostMapping("/{email}/aggiungi_ruolo")
     public ResponseEntity<?> aggiungiRuoloADipendente(@PathVariable String email, @RequestBody RuoloDTO request) {
         Dipendente dipendente = dipendenteService.aggiungiRuoloADipendente(email, request.getNomeRuolo());
         return ResponseEntity.ok(dipendente);
     }
+
 
     @GetMapping("/refreshToken")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {

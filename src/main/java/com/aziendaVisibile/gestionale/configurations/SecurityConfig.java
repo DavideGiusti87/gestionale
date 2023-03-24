@@ -8,10 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 @Configuration
 @RequiredArgsConstructor
@@ -35,11 +37,11 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((auth) -> auth
-                        //indichiamo a Spring Security che chiunque può consumare l'API /login con verbo POST.
-                        .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-                        //indichiamo a Spring Security che chiunque può consumare l'API /dipendente/nuovo con verbo POST.
-                        .requestMatchers(HttpMethod.POST, "/dipendente/nuovo").permitAll()
-                        //indichiamo a Spring Security che solo gli utenti con ruolo ADMIN possono consumare le API /dipendete/.. con verbo POST
+                        //indichiamo a Spring Security che chiunque può consumare l'API /login e /dipendente/nuovo con verbo POST.
+                        .requestMatchers(HttpMethod.POST, "/login/**","/dipendente/nuovo").permitAll()
+                        /*  //indichiamo a Spring Security che chiunque può consumare l'API /dipendente/nuovo con verbo POST.
+                            .requestMatchers(HttpMethod.POST, "/dipendente/nuovo").permitAll()
+                            //indichiamo a Spring Security che solo gli utenti con ruolo ADMIN possono consumare le API /dipendete/.. con verbo POST*/
                         .requestMatchers(HttpMethod.POST, "/dipendente/**").hasAuthority("ROLE_ADMIN")
                         //indichiamo che tutte le altre richieste possono essere consumate se l'utente è autenticato.
                         .anyRequest().authenticated()

@@ -70,13 +70,17 @@ public class DipendenteService implements UserDetailsService {
         log.info("Salvataggio dell'utente con email {} nel database", dipendente.getEmail());
         //Codifica la password prima di salvare a db.
         dipendente.setPassword(passwordEncoder.encode(dipendente.getPassword()));
-        //this.aggiungiRuoloADipendente(dipendente.getEmail(), "ROLE_USER");
-        return dipendenteRepository.save(dipendente);
+        dipendenteRepository.save(dipendente);
+        this.aggiungiRuoloADipendente(dipendente.getEmail(), "ROLE_USER");
+        return dipendente;
     }
 
     public Dipendente aggiungiRuoloADipendente(String email, String nomeRuolo) {
         log.info("Aggiunta del ruolo {} all'utente {}", nomeRuolo, email);
         Dipendente dipendente = dipendenteRepository.findByEmail(email);
+        if(!dipendente.getRuolo().isEmpty()){
+            dipendente.getRuolo().clear();
+        }
         Ruolo ruolo = ruoloRepository.findByNome(nomeRuolo);
         dipendente.getRuolo().add(ruolo);
         return dipendente;

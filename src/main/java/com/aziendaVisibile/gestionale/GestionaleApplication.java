@@ -1,8 +1,7 @@
 package com.aziendaVisibile.gestionale;
 
-import com.aziendaVisibile.gestionale.models.Dipendente;
 import com.aziendaVisibile.gestionale.models.Ruolo;
-import com.aziendaVisibile.gestionale.models.dto.DipendenteDTO;
+import com.aziendaVisibile.gestionale.models.dto.LoginDTO;
 import com.aziendaVisibile.gestionale.services.DipendenteService;
 import com.aziendaVisibile.gestionale.services.RuoloService;
 import org.springframework.boot.CommandLineRunner;
@@ -11,8 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.ArrayList;
 
 @SpringBootApplication
 public class GestionaleApplication {
@@ -33,7 +30,7 @@ public class GestionaleApplication {
 				ruoloService.salva(new Ruolo(null, "ROLE_USER"));
 				ruoloService.salva(new Ruolo(null, "ROLE_ADMIN"));
 
-				dipendenteService.salva(new DipendenteDTO("user@root.com", "root000"));
+				dipendenteService.salva(new LoginDTO("user@root.com", "root000"));
 
 				dipendenteService.aggiungiRuoloADipendente("user@root.com", "ROLE_ADMIN");
 			};

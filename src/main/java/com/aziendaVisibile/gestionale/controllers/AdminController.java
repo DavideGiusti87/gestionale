@@ -1,6 +1,7 @@
 package com.aziendaVisibile.gestionale.controllers;
 
 import com.aziendaVisibile.gestionale.models.Dipendente;
+import com.aziendaVisibile.gestionale.models.dto.RuoloDTO;
 import com.aziendaVisibile.gestionale.services.DipendenteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,5 +88,11 @@ public class AdminController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/{email}/aggiungi_ruolo")
+    public ResponseEntity<?> aggiungiRuoloADipendente(@PathVariable String email, @RequestBody RuoloDTO request) {
+        Dipendente dipendente = dipendenteService.aggiungiRuoloADipendente(email, request.getNomeRuolo());
+        return ResponseEntity.ok(dipendente);
     }
 }

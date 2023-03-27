@@ -2,7 +2,7 @@ package com.aziendaVisibile.gestionale.services;
 
 import com.aziendaVisibile.gestionale.models.Dipendente;
 import com.aziendaVisibile.gestionale.models.Ruolo;
-import com.aziendaVisibile.gestionale.models.dto.DipendenteDTO;
+import com.aziendaVisibile.gestionale.models.dto.LoginDTO;
 import com.aziendaVisibile.gestionale.repositories.DipendenteRepository;
 import com.aziendaVisibile.gestionale.repositories.RuoloRepository;
 import com.aziendaVisibile.gestionale.utilities.JwtUtil;
@@ -67,16 +67,16 @@ public class DipendenteService implements UserDetailsService {
     }
 
     @SneakyThrows
-    public Dipendente salva(DipendenteDTO dipendenteDTO) {
-        log.info("Salvataggio dell'utente con email {} nel database", dipendenteDTO.getEmail());
-        Dipendente dipendenteDB = dipendenteRepository.findByEmail(dipendenteDTO.getEmail());
+    public Dipendente salva(LoginDTO loginDTO) {
+        log.info("Salvataggio dell'utente con email {} nel database", loginDTO.getEmail());
+        Dipendente dipendenteDB = dipendenteRepository.findByEmail(loginDTO.getEmail());
         if(dipendenteDB != null) throw new Exception("Il dipendenteDTO è già esistente");
         Dipendente dipendente = new Dipendente();
-        dipendente.setEmail(dipendenteDTO.getEmail());
+        dipendente.setEmail(loginDTO.getEmail());
         //Codifica la password prima di salvare a db.
-        dipendente.setPassword(passwordEncoder.encode(dipendenteDTO.getPassword()));
+        dipendente.setPassword(passwordEncoder.encode(loginDTO.getPassword()));
         dipendenteRepository.save(dipendente);
-        this.aggiungiRuoloADipendente(dipendenteDTO.getEmail(), "ROLE_USER");
+        this.aggiungiRuoloADipendente(loginDTO.getEmail(), "ROLE_USER");
         return dipendente;
     }
 

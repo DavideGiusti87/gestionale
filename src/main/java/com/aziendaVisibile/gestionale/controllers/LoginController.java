@@ -1,13 +1,12 @@
 package com.aziendaVisibile.gestionale.controllers;
 
 import com.aziendaVisibile.gestionale.models.Dipendente;
-import com.aziendaVisibile.gestionale.models.dto.DipendenteDTO;
+import com.aziendaVisibile.gestionale.models.dto.LoginDTO;
 import com.aziendaVisibile.gestionale.models.dto.RuoloDTO;
 import com.aziendaVisibile.gestionale.services.DipendenteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,18 +31,9 @@ public class LoginController {
     private DipendenteService dipendenteService;
 
     @PostMapping("/nuovo")
-    public ResponseEntity<Dipendente> save(@RequestBody DipendenteDTO dipendente) {
+    public ResponseEntity<Dipendente> save(@RequestBody LoginDTO dipendente) {
         Dipendente salvaDipendente = dipendenteService.salva(dipendente);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/{email}")
-                .buildAndExpand(salvaDipendente.getEmail()).toUriString());
-        return ResponseEntity.created(uri).build();
-    }
-
-
-    @PostMapping("/{email}/aggiungi_ruolo")
-    public ResponseEntity<?> aggiungiRuoloADipendente(@PathVariable String email, @RequestBody RuoloDTO request) {
-        Dipendente dipendente = dipendenteService.aggiungiRuoloADipendente(email, request.getNomeRuolo());
-        return ResponseEntity.ok(dipendente);
+        return ResponseEntity.ok(salvaDipendente);
     }
 
 

@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/dipendente")
+@RequestMapping("/admin")
 @Slf4j
-public class DipendenteController {
+public class AdminController {
 
     @Autowired
     private DipendenteService dipendenteService;
-
 
     @GetMapping
     public ResponseEntity findAll() {
@@ -30,8 +29,7 @@ public class DipendenteController {
     }
 
 
-
-    @GetMapping("/email/{email}")
+    @GetMapping("/email{email}")
     public ResponseEntity findByEmail(@PathVariable String email) {
         try{
             return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findByEmail(email));
@@ -41,8 +39,7 @@ public class DipendenteController {
         }
     }
 
-
-    @GetMapping("/id/{id}")
+    @GetMapping("/id{id}")
     public ResponseEntity findById(@PathVariable Long id){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findById(id));
@@ -51,7 +48,8 @@ public class DipendenteController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @GetMapping("/nome/{nome}")
+
+    @GetMapping("/nome{nome}")
     public ResponseEntity findByNome(@PathVariable String nome){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findByNome(nome));
@@ -61,8 +59,7 @@ public class DipendenteController {
         }
     }
 
-
-    @GetMapping("/cognome/{cognome}")
+    @GetMapping("/cognome{cognome}")
     public ResponseEntity findByCognome(@PathVariable String cognome){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findByCognome(cognome));

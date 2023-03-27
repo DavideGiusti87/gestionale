@@ -2,6 +2,7 @@ package com.aziendaVisibile.gestionale;
 
 import com.aziendaVisibile.gestionale.models.Dipendente;
 import com.aziendaVisibile.gestionale.models.Ruolo;
+import com.aziendaVisibile.gestionale.models.dto.DipendenteDTO;
 import com.aziendaVisibile.gestionale.services.DipendenteService;
 import com.aziendaVisibile.gestionale.services.RuoloService;
 import org.springframework.boot.CommandLineRunner;
@@ -32,7 +33,7 @@ public class GestionaleApplication {
 				ruoloService.salva(new Ruolo(null, "ROLE_USER"));
 				ruoloService.salva(new Ruolo(null, "ROLE_ADMIN"));
 
-				dipendenteService.salva(new Dipendente(null, "user@root.com", "root000", new ArrayList<>()));
+				dipendenteService.salva(new DipendenteDTO("user@root.com", "root000"));
 
 				dipendenteService.aggiungiRuoloADipendente("user@root.com", "ROLE_ADMIN");
 			};

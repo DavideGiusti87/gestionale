@@ -14,6 +14,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -91,24 +92,34 @@ public class DipendenteService implements UserDetailsService {
         return dipendente;
     }
 
+    @Transactional
+    private Dipendente findByEmail(String email) {
+        log.info("Trovato dipendente {}", email);
+        return dipendenteRepository.findByEmail(email);
+    }
+
     @Transactional(readOnly = true)
-    public Dipendente findByEmail(String email) {
-        log.info("Recupero dell'utente con email {}", email);
-        Dipendente dipendente = dipendenteRepository.findByEmail(email);
-        if (dipendente != null){
-            log.info("Utente trovato");
-            return dipendente;
+    public Object findByEmail(String email, Principal principal) {
+        if (isAdmin(principal)) {
+            log.info("Utente trovato per l'utente {}", principal.getName());
+            return dipendenteRepository.findByEmail(email);
         }else{
-            log.info("Utente non trovato");
-            return null;
+            log.info("Utente trovato per l'utente {}", principal.getName());
+            return dipendenteRepository.findByEmail4DipendenteDTO(email);
         }
 
     }
 
     @Transactional(readOnly = true)
-    public List<Dipendente> findAll() {
-        log.info("Recupero di tutti gli utenti");
-        return dipendenteRepository.findAll();
+    public List<? extends Object> findAll(Principal principal) {
+        if(isAdmin(principal)){
+            log.info("Recupero di tutti gli utenti");
+            return dipendenteRepository.findAll();
+        }else {
+            log.info("Recupero di tutti gli utenti");
+            return dipendenteRepository.findAll4DipendenteDTO();
+        }
+
     }
 
     @Transactional(readOnly = true)
@@ -124,22 +135,37 @@ public class DipendenteService implements UserDetailsService {
         return Map.of("access_token", accessToken, "refresh_token", refreshToken);
     }
 
+
+
     @Transactional(readOnly = true)
     public Optional<Dipendente> findById(Long id) {
         log.info("Recupero dell'utente con id {}", id);
         return dipendenteRepository.findById(id);
     }
 
+
+
     @Transactional(readOnly = true)
-    public Optional<Dipendente> findByNome(String nome) {
-        log.info("Recupero dell'utente con nome {}", nome);
-        return dipendenteRepository.findByNome(nome);
+    public Object findByNome(String nome, Principal principal) {
+        if (isAdmin(principal)){
+            log.info("Recupero dell'utente con nome {}", nome);
+            return dipendenteRepository.findByNome(nome);
+        }else {
+            log.info("Recupero dell'utente con nome {}", nome);
+            return dipendenteRepository.findByNome4DipendenteDTO(nome);
+        }
+
     }
 
     @Transactional(readOnly = true)
-    public Optional<Dipendente> findByCognome(String cognome) {
-        log.info("Recupero dell'utente con cognome {}", cognome);
-        return dipendenteRepository.findByCognome(cognome);
+    public Object findByCognome(String cognome, Principal principal) {
+        if (isAdmin(principal)){
+            log.info("Recupero dell'utente con cognome {}", cognome);
+            return dipendenteRepository.findByCognome(cognome);
+        }else {
+            log.info("Recupero dell'utente con cognome {}", cognome);
+            return dipendenteRepository.findByCognome4DipendenteDTO(cognome);
+        }
     }
 
     public Dipendente aggiornaAnagrafica(Principal principal, Dipendente aggiornamento) {
@@ -166,4 +192,27 @@ public class DipendenteService implements UserDetailsService {
         log.info("Modificato stipendio del dipendente {}", dipendente);
         return dipendente;
     }
+
+    @Transactional(readOnly = true)
+    private Boolean isAdmin(Principal principal) {
+        UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) principal;
+        Collection<? extends GrantedAuthority> authorities = authenticationToken.getAuthorities();
+        boolean isAdmin = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role -> role.equals("ROLE_ADMIN"));
+        return isAdmin;
+    }
+
+//    @Transactional(readOnly = true)
+//    private DipendenteDTO creaDipendenteDTO(Dipendente dipendente) {
+//        DipendenteDTO dipendenteDTO = new DipendenteDTO();
+//        dipendenteDTO.setCognome(dipendente.getCognome());
+//        dipendenteDTO.setNome(dipendente.getNome());
+//        dipendenteDTO.setEmail(dipendente.getEmail());
+//        dipendenteDTO.setPaese(dipendente.getPaese());
+//        dipendenteDTO.setProvincia(dipendente.getProvincia());
+//        dipendenteDTO.setComune(dipendente.getComune());
+//        return dipendenteDTO;
+//    }
+
 }

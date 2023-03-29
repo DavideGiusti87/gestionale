@@ -39,12 +39,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         //indichiamo a Spring Security che chiunque può consumare l'API /login e /dipendente/nuovo con verbo POST.
                         .requestMatchers(HttpMethod.POST, "/login/**","/new_login/**").permitAll()
-                        //indichiamo a Spring Security che solo gli utenti con ruolo ADMIN possono consumare l'API /admin/**.
-                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                        //indichiamo a Spring Security che solo gli utenti con ruolo USER possono consumare l'API /dipendente/**.
-                        .requestMatchers("/dipendente/**").hasAuthority("ROLE_USER")
-                        //indichiamo a Spring Security che solo gli utenti con ruolo ADMIN possono consumare le API /dipendete/.. con verbo POST
-                        //.requestMatchers(HttpMethod.POST, "/dipendente/**").hasAuthority("ROLE_ADMIN")
+                        //indichiamo a Spring Security che solo gli utenti con ruolo ADMIN possono consumare l'API /id/** e /aggiungi_ruolo/**.
+                        .requestMatchers("/dipendente/id/**","/dipendente/aggiungi_ruolo/**").hasAuthority("ROLE_ADMIN")
+                        //indichiamo a Spring Security che solo gli utenti con ruolo ADMIN possono consumare l'API /dipendente/**.con verbo PATCH
+                        .requestMatchers(HttpMethod.PATCH,"/dipendente/**").hasAuthority("ROLE_ADMIN")
                         //indichiamo che tutte le altre richieste possono essere consumate se l'utente è autenticato.
                         .anyRequest().authenticated()
                 )

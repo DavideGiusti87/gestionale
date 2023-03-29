@@ -1,6 +1,7 @@
 package com.aziendaVisibile.gestionale.controllers;
 
 import com.aziendaVisibile.gestionale.models.Dipendente;
+import com.aziendaVisibile.gestionale.models.dto.RuoloDTO;
 import com.aziendaVisibile.gestionale.services.DipendenteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ public class DipendenteController {
 
 
     @GetMapping
-    public ResponseEntity findAll() {
+    public ResponseEntity findAll(Principal principal) {
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findAll());
+            return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findAll(principal));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -31,10 +32,10 @@ public class DipendenteController {
 
 
 
-    @GetMapping("/email/{email}")
-    public ResponseEntity findByEmail(@PathVariable String email) {
+    @GetMapping("/email")
+    public ResponseEntity findByEmail(@RequestParam String email, Principal principal) {
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findByEmail(email));
+            return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findByEmail(email, principal));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -42,8 +43,8 @@ public class DipendenteController {
     }
 
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity findById(@PathVariable Long id){
+    @GetMapping("/id")
+    public ResponseEntity findById(@RequestParam Long id){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findById(id));
         }catch (Exception e){
@@ -51,10 +52,10 @@ public class DipendenteController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity findByNome(@PathVariable String nome){
+    @GetMapping("/nome")
+    public ResponseEntity findByNome(@RequestParam String nome, Principal principal){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findByNome(nome));
+            return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findByNome(nome, principal));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -62,10 +63,10 @@ public class DipendenteController {
     }
 
 
-    @GetMapping("/cognome/{cognome}")
-    public ResponseEntity findByCognome(@PathVariable String cognome){
+    @GetMapping("/cognome")
+    public ResponseEntity findByCognome(@RequestParam String cognome, Principal principal){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findByCognome(cognome));
+            return ResponseEntity.status(HttpStatus.OK).body(dipendenteService.findByCognome(cognome, principal));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -90,5 +91,11 @@ public class DipendenteController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @PatchMapping("/aggiungi_ruolo")
+    public ResponseEntity<?> aggiungiRuoloADipendente(@RequestParam String email, @RequestBody RuoloDTO request) {
+        Dipendente dipendente = dipendenteService.aggiungiRuoloADipendente(email, request.getNomeRuolo());
+        return ResponseEntity.ok(dipendente);
     }
 }
